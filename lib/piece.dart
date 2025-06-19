@@ -8,6 +8,7 @@ class Piece {
 
   Piece({required this.type});
 
+  int rotationState = 0; // 0, 1, 2, 3 for 4 possible rotations
 
   List<int> position = [];
 
@@ -73,13 +74,244 @@ class Piece {
     }
   }
 
+  // COMPLETE THIS METHOD FOR ROTATION
   void rotatePiece() {
-    // This is a complex part of Tetris. You'd need rotation logic
-    // specific to each piece type and its center of rotation.
-    // For simplicity, a basic example (might not be perfect for all pieces)
-    // You would typically have rotation matrices or predefined rotation states.
-    // Example: For a simple piece like 'O', rotation does nothing.
-    // For 'I' it alternates horizontal/vertical.
-    // For 'L', 'J', 'T', 'S', 'Z' it's more complex.
+    // Store current position to revert if collision occurs after rotation
+    List<int> originalPosition = List.from(position);
+
+    // Calculate the new rotation state
+    rotationState = (rotationState + 1) % 4; // Cycle through 0, 1, 2, 3
+
+    // Apply rotation based on piece type and current rotation state
+    switch (type) {
+      case Tetromino.L:
+        switch (rotationState) {
+          case 0: // Original L shape
+            position = [
+              originalPosition[3] - rowLength * 2,
+              originalPosition[3] - rowLength,
+              originalPosition[3] - 1,
+              originalPosition[3]
+            ];
+            break;
+          case 1: // Rotated 90 deg clockwise
+            position = [
+              originalPosition[3] - rowLength,
+              originalPosition[3],
+              originalPosition[3] + 1,
+              originalPosition[3] + rowLength + 1
+            ];
+            break;
+          case 2: // Rotated 180 deg clockwise
+            position = [
+              originalPosition[3],
+              originalPosition[3] + 1,
+              originalPosition[3] + rowLength,
+              originalPosition[3] + rowLength * 2
+            ];
+            break;
+          case 3: // Rotated 270 deg clockwise
+            position = [
+              originalPosition[3] - rowLength - 1,
+              originalPosition[3] - 1,
+              originalPosition[3],
+              originalPosition[3] + rowLength
+            ];
+            break;
+        }
+        break;
+
+      case Tetromino.J:
+        switch (rotationState) {
+          case 0:
+            position = [
+              originalPosition[1] - rowLength * 2,
+              originalPosition[1] - rowLength,
+              originalPosition[1],
+              originalPosition[1] + 1,
+            ];
+            break;
+          case 1:
+            position = [
+              originalPosition[1] - rowLength,
+              originalPosition[1],
+              originalPosition[1] + 1,
+              originalPosition[1] + rowLength -1,
+            ];
+            break;
+          case 2:
+            position = [
+              originalPosition[1] - 1,
+              originalPosition[1],
+              originalPosition[1] + rowLength,
+              originalPosition[1] + rowLength * 2,
+            ];
+            break;
+          case 3:
+            position = [
+              originalPosition[1] - rowLength + 1,
+              originalPosition[1] - 1,
+              originalPosition[1],
+              originalPosition[1] + rowLength,
+            ];
+            break;
+        }
+        break;
+
+      case Tetromino.I:
+      // 'I' piece usually rotates around its second or third block (center)
+        switch (rotationState) {
+          case 0: // Horizontal
+            position = [
+              originalPosition[1] - rowLength * 2,
+              originalPosition[1] - rowLength,
+              originalPosition[1],
+              originalPosition[1] + rowLength,
+            ];
+            break;
+          case 1: // Vertical
+            position = [
+              originalPosition[2] - 2,
+              originalPosition[2] - 1,
+              originalPosition[2],
+              originalPosition[2] + 1,
+            ];
+            break;
+          case 2: // Horizontal again
+            position = [
+              originalPosition[1] - rowLength * 2,
+              originalPosition[1] - rowLength,
+              originalPosition[1],
+              originalPosition[1] + rowLength,
+            ];
+            break;
+          case 3: // Vertical again
+            position = [
+              originalPosition[2] - 2,
+              originalPosition[2] - 1,
+              originalPosition[2],
+              originalPosition[2] + 1,
+            ];
+            break;
+        }
+        break;
+
+      case Tetromino.O:
+      // O-piece does not rotate, its shape is always the same.
+      // So, position remains original, and rotationState will simply cycle without visual change.
+        position = List.from(originalPosition); // No actual change in position
+        break;
+
+      case Tetromino.S:
+        switch (rotationState) {
+          case 0:
+            position = [
+              originalPosition[1] - rowLength,
+              originalPosition[1],
+              originalPosition[1] + 1,
+              originalPosition[1] + rowLength + 1,
+            ];
+            break;
+          case 1:
+            position = [
+              originalPosition[2] - 1,
+              originalPosition[2],
+              originalPosition[2] + rowLength,
+              originalPosition[2] + rowLength + 1,
+            ];
+            break;
+          case 2:
+            position = [
+              originalPosition[1] - rowLength,
+              originalPosition[1],
+              originalPosition[1] + 1,
+              originalPosition[1] + rowLength + 1,
+            ];
+            break;
+          case 3:
+            position = [
+              originalPosition[2] - 1,
+              originalPosition[2],
+              originalPosition[2] + rowLength,
+              originalPosition[2] + rowLength + 1,
+            ];
+            break;
+        }
+        break;
+
+      case Tetromino.Z:
+        switch (rotationState) {
+          case 0:
+            position = [
+              originalPosition[1] - rowLength * 2,
+              originalPosition[1] - rowLength,
+              originalPosition[1],
+              originalPosition[1] + 1,
+            ];
+            break;
+          case 1:
+            position = [
+              originalPosition[2] - rowLength - 1,
+              originalPosition[2],
+              originalPosition[2] + 1,
+              originalPosition[2] + rowLength,
+            ];
+            break;
+          case 2:
+            position = [
+              originalPosition[1] - rowLength * 2,
+              originalPosition[1] - rowLength,
+              originalPosition[1],
+              originalPosition[1] + 1,
+            ];
+            break;
+          case 3:
+            position = [
+              originalPosition[2] - rowLength - 1,
+              originalPosition[2],
+              originalPosition[2] + 1,
+              originalPosition[2] + rowLength,
+            ];
+            break;
+        }
+        break;
+
+      case Tetromino.T:
+        switch (rotationState) {
+          case 0:
+            position = [
+              originalPosition[1] - rowLength,
+              originalPosition[1],
+              originalPosition[1] + 1,
+              originalPosition[1] + rowLength,
+            ];
+            break;
+          case 1:
+            position = [
+              originalPosition[1] - rowLength,
+              originalPosition[1] - 1,
+              originalPosition[1],
+              originalPosition[1] + rowLength,
+            ];
+            break;
+          case 2:
+            position = [
+              originalPosition[1] - 1,
+              originalPosition[1],
+              originalPosition[1] + 1,
+              originalPosition[1] + rowLength,
+            ];
+            break;
+          case 3:
+            position = [
+              originalPosition[1] - rowLength,
+              originalPosition[1],
+              originalPosition[1] + 1,
+              originalPosition[1] + rowLength,
+            ]; // Adjust for 270 degree rotation
+            break;
+        }
+        break;
+    }
   }
 }

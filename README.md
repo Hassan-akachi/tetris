@@ -18,7 +18,7 @@ A classic Tetris game meticulously crafted with Flutter, offering a smooth and e
   </div>
 
   <p><em>Mobile Experience</em></p>
-
+</div>
 
 ## ✨ Features
 
